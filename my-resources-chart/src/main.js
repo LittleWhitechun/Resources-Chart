@@ -2,8 +2,11 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+// import echarts from "echarts/lib/echarts"
+// import china from 'echarts/map/json/china.json'
+// echarts.registerMap('china', china)
+// Vue.prototype.$echarts = echarts
 
-Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
