@@ -2,8 +2,6 @@
   <div>
     <div id="chinaMap" :style="{ width: `${width}px`, height: `${height}px` }">
     </div>
-    <!-- <div id="chinaMap" :style="{ width: `60vw`, height: `90vh` }">
-    </div> -->
   </div>
 
 </template>

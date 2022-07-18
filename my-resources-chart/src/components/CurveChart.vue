@@ -1,6 +1,6 @@
 <template>
     <div :style="{ width: `${width}px`, height: `${height}px` }" class="curve-chart">
-        <div :style="{ width: `100%`, height: '10%' ,backgroundColor:'#fff' }" >
+        <div :style="{ width: `100%`, height: '10%' ,backgroundColor:'#fff',paddingTop:'10px' }" >
             <span class="title">
                 {{ title }}
             </span>

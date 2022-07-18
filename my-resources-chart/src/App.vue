@@ -22,12 +22,20 @@
             <div class="map__title-item__count">17</div>
           </div>
         </div>
-        <ChinaMap :width="1160" :height="960" />
+        <ChinaMap :width="1210" :height="960" />
       </div>
       <div class="curve">
+        <div class="select-row">
+          <el-date-picker v-model="selectData.date" type="date" placeholder="选择日期" class="date-select">
+          </el-date-picker>
+          <el-select v-model="selectData.level" placeholder="请选择" class="level-select">
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
         <CurveChart :width="492" :height="289" />
         <CurveChart :width="492" :height="289" title="实时数据流" count="10000条" />
-        <CurveChart :width="492" :height="289" title="实时状态流" count="0.5Gbps"/>
+        <CurveChart :width="492" :height="289" title="实时状态流" count="0.5Gbps" />
       </div>
     </div>
   </div>
@@ -50,6 +58,18 @@ export default {
       this.setScale()
     })
   },
+  data() {
+    return {
+      selectData: {
+        date: '',
+        level: '中央'
+      },
+      options: [
+        { value: '中央', label: '中央' },
+        { value: '地方', label: '地方' },
+      ]
+    }
+  },
   methods: {
     setScale() {
       let designWidth = 1726;//设计稿的宽度，根据实际项目调整
@@ -67,6 +87,7 @@ export default {
 <style>
 body {
   overflow: hidden;
+  background-color: #EEF5FD;
 }
 
 #app {
@@ -94,6 +115,7 @@ body {
   transform-origin: 0 0;
   position: absolute;
   left: 50%;
+  /* top:50%; */
   overflow: hidden;
 }
 
@@ -136,5 +158,26 @@ body {
   /* gap: 24px; */
   /* justify-content: space-between; */
   gap: 20px
+}
+
+.date-select {
+  width: 236px;
+  height: 32px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  /* border: 1px solid #D9D9D9; */
+}
+
+.level-select {
+  width: 236px;
+  height: 32px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  /* border: 1px solid #D9D9D9; */
+}
+.select-row{
+  width: 492px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
