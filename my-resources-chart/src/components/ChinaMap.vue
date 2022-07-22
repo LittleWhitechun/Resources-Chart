@@ -1,6 +1,13 @@
 <template>
   <div>
-    <div id="chinaMap" :style="{ width: `${width}px`, height: `${height}px` }">
+    <span class="tooltiptext" ref="toolTip">
+      <div style="color:#4E85D7;font-weight: 800;">
+        <i class="el-icon-s-order"></i><span>关联信息</span>
+      </div>
+      <div v-html="tooltipText"></div>
+    </span>
+    <div ref="chinaMap" id="chinaMap" :style="{ width: `${width}px`, height: `${height}px` }">
+
     </div>
   </div>
 
@@ -21,11 +28,14 @@ echarts.registerMap('china', china)
 export default {
   name: 'ChinaMap',
   props: {
-    width:{
-      default:1000
+    width: {
+      default: 1000
     },
-    height:{
-      default:1000
+    height: {
+      default: 1000
+    },
+    scaleRatio: {
+      default: 1
     }
   },
   data() {
@@ -48,7 +58,7 @@ export default {
       },
       myChart: null,
       streamOption: {
-        backgroundColor:'#fff',
+        backgroundColor: '#fff',
         geo: {
           show: true,
           map: 'china',
@@ -87,11 +97,12 @@ export default {
           }
         },
         series: [],
+        // legend:[]
         legend: [{
           orient: 'vertical',
           top: 'bottom',
           left: 'left',
-          padding:[0,0,140,40],
+          padding: [0, 0, 140, 40],
           data: [{
             name: '指令流',
             icon: `image://${icon1}`
@@ -114,7 +125,7 @@ export default {
           orient: 'vertical',
           top: 'bottom',
           left: '10%',
-          padding:[0,0,140,40],
+          padding: [0, 0, 140, 40],
           data: [{
             name: '故障',
             icon: `image://${icon4}`
@@ -132,7 +143,8 @@ export default {
           itemHeight: 12,
           itemWidth: 12,
         }]
-      }
+      },
+      tooltipText: ''
     }
   },
   created() {
@@ -149,19 +161,40 @@ export default {
   },
   methods: {
     resize() {
-
+      this.$nextTick(() => {
+        if (this.$refs.chinaMap) {
+          // this.$refs.chinaMap.style.width = `${this.width * this.scaleRatio}px`
+          // this.$refs.chinaMap.style.height = `${this.height * this.scaleRatio}px`
+          // this.$refs.chinaMap.style.transform = `scale(${1 / this.scaleRatio})`
+          // this.$refs.chinaMap.style.transformOrigin = 'left top'
+          this.myChart.resize()
+        }
+      })
     },
     drawLine() {
-
       let container = document.getElementById('chinaMap')
       let myChart = echarts.init(container)
       myChart.setOption(this.streamOption)
+      myChart.on('click', e => {
+        if (!e.data) {
+          this.$refs.toolTip.style.visibility = 'hidden'
+          return
+        }
+        // console.log(e.fromName)
+        if (e.data.fromName) {
+          this.tooltipText = `${e.data.fromName} => ${e.data.toName} <br> ${e.data.type}`
+        }
+        // console.log('scale:',this.scaleRatio)
+        if (e.data.name) {
+          this.tooltipText = `${e.data.name} <br> ${e.data.type}`
+        }
+        this.$refs.toolTip.style.visibility = 'visible'
+        this.$refs.toolTip.style.left = `${e.event.offsetX - this.$refs.toolTip.offsetWidth /2}px`
+        this.$refs.toolTip.style.top = `${(e.event.offsetY + this.$refs.chinaMap.getBoundingClientRect().top / this.scaleRatio - this.$refs.toolTip.offsetHeight - 15)}px`
+        console.log(this.$refs.toolTip.offsetHeight)
+      })
       this.myChart = myChart
-      // let chartResize = () => {
-      //   container.style.width = 100 + '%'
-      //   container.style.height = window.innerHeight * 0.7 + 'px'
-      // }
-      window.addEventListener('resize', this.myChart.resize())
+      window.addEventListener('resize', this.resize)
     },
     getStreamData() {
       const resData = [{
@@ -226,7 +259,7 @@ export default {
           trailLength: 0.1,
           color: `#fff`,
           symbolSize: 9,
-          symbol:'arrow',
+          symbol: 'arrow',
         },
         lineStyle: {
           normal: {
@@ -237,11 +270,11 @@ export default {
               x2: 0,
               y2: 1,
               colorStops: [{
-                offset: 0, color: `red` // 0% 处的颜色
+                offset: 0, color: `red`
               }, {
-                offset: 1, color: `rgba(255, 255, 255, 0.95)` // 100% 处的颜色
+                offset: 1, color: `rgba(255, 255, 255, 0.95)`
               }],
-              globalCoord: false // 缺省为 false
+              globalCoord: false
             },
             width: 3.5,
             curveness: 0.451
@@ -250,7 +283,7 @@ export default {
       }
       this.streamData = resData
 
-      for(let type of ['指令流','数据流','状态流']){
+      for (let type of ['指令流', '数据流', '状态流']) {
         const stream = JSON.parse(JSON.stringify(streamSerie))
         stream.name = type
         stream.lineStyle.normal.color.colorStops[0].color = this.streamColor[type]
@@ -284,7 +317,7 @@ export default {
           textStyle: {
             fontSize: 12,
             color: '#000',
-            fontWeight:700
+            fontWeight: 700
           }
         }
       }
@@ -312,5 +345,41 @@ export default {
 </script>
 
 <style scoped>
+#container{
+  padding: 0 !important;
+}
+.tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  height: 100px;
+  color: #000;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
 
+  background: #FFFFFF;
+  box-shadow: 0px 4px 10px 0px rgba(5, 27, 57, 0.4000);
+  border: 1px solid #9EA4DF;
+
+  /* 定位 */
+  position: fixed;
+  z-index: 1;
+
+  font-size: 14px;
+  font-family: SourceHanSansCN-Regular, SourceHanSansCN;
+  font-weight: 400;
+  line-height: 21px;
+}
+
+.tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  /* 提示工具底部 */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(255, 255, 255) transparent transparent transparent;
+}
 </style>

@@ -4,7 +4,6 @@
       <div class="map">
         <div class="map__title">
           <div class="map__title-item">
-            <!-- <img src="./assets/icon/总@2x.png"> -->
             <div class="map__title-item__title">监控平台接入总量</div>
             <div class="map__title-item__count">200</div>
           </div>
@@ -22,13 +21,13 @@
             <div class="map__title-item__count">17</div>
           </div>
         </div>
-        <ChinaMap :width="1210" :height="960" />
+        <ChinaMap :width="1210" :height="960" :scaleRatio="scaleRatio" />
       </div>
       <div class="curve">
         <div class="select-row">
-          <el-date-picker v-model="selectData.date" type="date" placeholder="选择日期" class="date-select">
+          <el-date-picker v-model="selectData.date" type="date" placeholder="选择日期" class="date-select" @change="changeCurve">
           </el-date-picker>
-          <el-select v-model="selectData.level" placeholder="请选择" class="level-select">
+          <el-select v-model="selectData.level" placeholder="请选择" class="level-select" @change="changeCurve">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -67,18 +66,23 @@ export default {
       options: [
         { value: '中央', label: '中央' },
         { value: '地方', label: '地方' },
-      ]
+      ],
+      scaleRatio:1
     }
   },
   methods: {
     setScale() {
-      let designWidth = 1726;//设计稿的宽度，根据实际项目调整
+      let designWidth = 1726;
       let designHeight = 1041;
       let scale = document.documentElement.clientWidth / document.documentElement.clientHeight < designWidth / designHeight ?
         (document.documentElement.clientWidth / designWidth) :
         (document.documentElement.clientHeight / designHeight);
       document.querySelector('#container').style.transform = `scale(${scale}) translate(-50%)`
+      this.scaleRatio = scale
     },
+    changeCurve(){
+
+    }
   },
 
 }
@@ -87,7 +91,7 @@ export default {
 <style>
 body {
   overflow: hidden;
-  background-color: #EEF5FD;
+  background-color: #f0f2f5;
 }
 
 #app {
@@ -106,7 +110,7 @@ body {
 }
 
 #container {
-  padding: 50px;
+  padding: 0;
   display: flex;
   gap: 24px;
   margin: 0;
