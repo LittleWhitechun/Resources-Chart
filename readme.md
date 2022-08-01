@@ -7,6 +7,6 @@
 - 大屏/PC自适应
 - 点击出现信息框，信息框自适应
 
-![](https://raw.githubusercontent.com/LittleWhitechun/PicsBed/master/202207250925928.png?token=AHJN25TA23FEUGEI7KMAMYLC3XYUK)
+![](https://github.com/LittleWhitechun/PicsBed/blob/master/202207250925928.png)
 
-![image-20220725092533214](https://raw.githubusercontent.com/LittleWhitechun/PicsBed/master/202207250925249.png?token=AHJN25TRRQWXSPHJUB2FT4LC3XYUU)
+![image-20220725092533214](https://github.com/LittleWhitechun/PicsBed/blob/master/202207250925249.png)
